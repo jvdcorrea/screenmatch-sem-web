@@ -3,12 +3,15 @@ package br.jao.screenmatch.principal;
 import br.jao.screenmatch.model.DadosEpisodio;
 import br.jao.screenmatch.model.DadosSerie;
 import br.jao.screenmatch.model.DadosTemporada;
+import br.jao.screenmatch.model.Episodio;
 import br.jao.screenmatch.service.ConsumoApi;
 import br.jao.screenmatch.service.ConverteDados;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Principal {
 
@@ -36,15 +39,27 @@ public class Principal {
             DadosTemporada dadosTemporada = conversor.obterDados(json, DadosTemporada.class);
             temporadas.add(dadosTemporada);
         }
-        temporadas.forEach(System.out::println);
+        //temporadas.forEach(System.out::println);
+        //temporadas.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
 
-        for(int i = 0; i < dados.totalTemporadas(); i ++){
-            List<DadosEpisodio> episodiosTemporada = temporadas.get(i).episodios();
+        List<DadosEpisodio> dadosEpisodios = temporadas.stream()
+                .flatMap(t -> t.episodios().stream())
+                .collect(Collectors.toList());
 
-            for (int j = 0; j < episodiosTemporada.size(); j++){
-                    System.out.println(episodiosTemporada.get(j).titulo());
-            }
-        }
+        System.out.println("\nTop 5");
+        dadosEpisodios.stream()
+                .filter(e -> !e.avaliacao().equalsIgnoreCase("N/A"))
+                .sorted(Comparator.comparing(DadosEpisodio::avaliacao).reversed())
+                .limit(5)
+                .forEach(System.out::println);
+
+        List<Episodio> episodios = temporadas.stream()
+                .flatMap(t -> t.episodios().stream()
+                    .map(d -> new Episodio(t.numero(), d)))
+                .collect(Collectors.toList());
+
+        System.out.println("\n\nEpisodios");
+        episodios.forEach(System.out::println);
 
     }
 }
