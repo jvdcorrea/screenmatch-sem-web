@@ -8,10 +8,10 @@ Neste projeto, eu aprendi ferramentas essenciais do java, que mantém a linguage
 Para executar, siga os passos:
 
 ### Pré-requisitos
-**- Git**
-**- Java 8 ou superior**
-**- IDE de sua escolha**
-**- Maven**
+**- Git**<br>
+**- Java 8 ou superior**<br>
+**- IDE de sua escolha**<br>
+**- Maven**<br>
 
 ### Instalando
 1. Clone o repositório
